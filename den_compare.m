@@ -1,4 +1,7 @@
 function [PSNR,SNR] = den_compare(img, noise_var)
+    % this function adds Gaussian noise with 0 mean and variance noise_var
+    % to img and apply various denoising methods on it. The intensity of 
+    % pixel in img should between 0 and 1. 
     img_n = imnoise(img,"gaussian",0,noise_var); %adding noise
     
     subplot(3,2,1)
