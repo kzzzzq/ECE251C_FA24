@@ -1,4 +1,4 @@
-function [PSNR,SNR,ssim_den] = den_compare(img, noise_var,suppress_BM3D)
+function [PSNR,SNR,ssim_den,img_den] = den_compare(img, noise_var,suppress_BM3D)
     % this function adds Gaussian noise with 0 mean and variance noise_var
     % to img and apply various denoising methods on it. The intensity of 
     % pixel in img should between 0 and 1. 
@@ -132,6 +132,15 @@ function [PSNR,SNR,ssim_den] = den_compare(img, noise_var,suppress_BM3D)
     imagesc(img_den_nei_complex_real_imag)
     colormap gray
     title("denoised image using DTCWT NeighShrink (seperate real and imag parts)")
+
+    %figure
+    subplot(3,2,4)
+    img_den_bi = BiShrink_func(img_n,'db4',5,5);
+    [afterPSNR8,afterSNR8] = psnr(img_den_bi,img);
+    ssim_bi = ssim(img_den_bi,img);
+    imagesc(img_den_bi)
+    colormap gray
+    title("bishrink")
     
       
     disp(["noise variance:",num2str(sqrt(noise_var)*255)])
@@ -148,11 +157,21 @@ function [PSNR,SNR,ssim_den] = den_compare(img, noise_var,suppress_BM3D)
     
     disp(["PSNR/SSIM after CWT NeighShrink:",num2str(afterPSNR4)," / ",num2str(ssim_nei_complex)])
     disp(["PSNR/SSIM after CWT NeighShrink (seperate real and imag parts):",num2str(afterPSNR7)," / ",num2str(ssim_nei_complex_real_imag)])
-    
+    disp(["PSNR/SSIM after BiShrink:",num2str(afterPSNR8)," / ",num2str(ssim_bi)])
 
     % disp(["PSNR/SSIM after CWT Neighshrink + BM3D:",num2str(afterPSNR6)," / ",num2str(ssim_BM3D_complex_3)])
 
-    SNR = [beforeSNR,afterSNR1,afterSNR2,afterSNR3,afterSNR4,afterSNR5,afterSNR6,afterSNR7];
-    PSNR = [beforePSNR,afterPSNR1,afterPSNR2,afterPSNR3,afterPSNR4,afterPSNR5,afterPSNR6,afterPSNR7];
-    ssim_den = [ssim_noise,ssim_sure,ssim_nei,ssim_BM3D,ssim_nei_complex,ssim_BM3D_complex,ssim_BM3D_complex_3,ssim_nei_complex_real_imag];
+    SNR = [beforeSNR,afterSNR1,afterSNR2,afterSNR3,afterSNR4,afterSNR5,afterSNR6,afterSNR7,afterSNR8];
+    PSNR = [beforePSNR,afterPSNR1,afterPSNR2,afterPSNR3,afterPSNR4,afterPSNR5,afterPSNR6,afterPSNR7,afterPSNR8];
+    ssim_den = [ssim_noise,ssim_sure,ssim_nei,ssim_BM3D,ssim_nei_complex,ssim_BM3D_complex,ssim_BM3D_complex_3,ssim_nei_complex_real_imag,ssim_bi];
+    img_den(:,:,1) = img;
+    img_den(:,:,2) = img_n;
+    img_den(:,:,3) = img_den_sure;
+    img_den(:,:,4) = img_den_nei;
+    img_den(:,:,5) = img_den_BM3D;
+    img_den(:,:,6) = img_den_nei_complex;
+    img_den(:,:,7) = img_den_BM3D_complex;
+    img_den(:,:,8) = img_den_BM3D_complex_3;
+    img_den(:,:,9) = img_den_nei_complex_real_imag;
+    img_den(:,:,10) = img_den_bi;
 end
