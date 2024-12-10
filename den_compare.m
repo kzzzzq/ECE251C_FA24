@@ -133,7 +133,7 @@ function [PSNR,SNR,ssim_den,img_den] = den_compare(img, noise_var,suppress_BM3D)
     colormap gray
     title("denoised image using DTCWT NeighShrink (seperate real and imag parts)")
 
-    %figure
+   
     subplot(3,2,4)
     img_den_bi = BiShrink_func(img_n,'db4',5,5);
     [afterPSNR8,afterSNR8] = psnr(img_den_bi,img);
@@ -141,6 +141,14 @@ function [PSNR,SNR,ssim_den,img_den] = den_compare(img, noise_var,suppress_BM3D)
     imagesc(img_den_bi)
     colormap gray
     title("bishrink")
+
+    subplot(3,2,5)
+    img_den_bi_com = BiShrink_complex_func(img_n,5,5);
+    [afterPSNR9,afterSNR9] = psnr(img_den_bi_com,img);
+    ssim_bi_com = ssim(img_den_bi_com,img);
+    imagesc(img_den_bi_com)
+    colormap gray
+    title("ocmplex bishrink")
     
       
     disp(["noise variance:",num2str(sqrt(noise_var)*255)])
@@ -158,12 +166,13 @@ function [PSNR,SNR,ssim_den,img_den] = den_compare(img, noise_var,suppress_BM3D)
     disp(["PSNR/SSIM after CWT NeighShrink:",num2str(afterPSNR4)," / ",num2str(ssim_nei_complex)])
     disp(["PSNR/SSIM after CWT NeighShrink (seperate real and imag parts):",num2str(afterPSNR7)," / ",num2str(ssim_nei_complex_real_imag)])
     disp(["PSNR/SSIM after BiShrink:",num2str(afterPSNR8)," / ",num2str(ssim_bi)])
+    disp(["PSNR/SSIM after CWT BiShrink:",num2str(afterPSNR9)," / ",num2str(ssim_bi_com)])
 
     % disp(["PSNR/SSIM after CWT Neighshrink + BM3D:",num2str(afterPSNR6)," / ",num2str(ssim_BM3D_complex_3)])
 
-    SNR = [beforeSNR,afterSNR1,afterSNR2,afterSNR3,afterSNR4,afterSNR5,afterSNR6,afterSNR7,afterSNR8];
-    PSNR = [beforePSNR,afterPSNR1,afterPSNR2,afterPSNR3,afterPSNR4,afterPSNR5,afterPSNR6,afterPSNR7,afterPSNR8];
-    ssim_den = [ssim_noise,ssim_sure,ssim_nei,ssim_BM3D,ssim_nei_complex,ssim_BM3D_complex,ssim_BM3D_complex_3,ssim_nei_complex_real_imag,ssim_bi];
+    SNR = [beforeSNR,afterSNR1,afterSNR2,afterSNR3,afterSNR4,afterSNR5,afterSNR6,afterSNR7,afterSNR8,afterSNR9];
+    PSNR = [beforePSNR,afterPSNR1,afterPSNR2,afterPSNR3,afterPSNR4,afterPSNR5,afterPSNR6,afterPSNR7,afterPSNR8,afterPSNR9];
+    ssim_den = [ssim_noise,ssim_sure,ssim_nei,ssim_BM3D,ssim_nei_complex,ssim_BM3D_complex,ssim_BM3D_complex_3,ssim_nei_complex_real_imag,ssim_bi,ssim_bi_com];
     img_den(:,:,1) = img;
     img_den(:,:,2) = img_n;
     img_den(:,:,3) = img_den_sure;
@@ -174,4 +183,5 @@ function [PSNR,SNR,ssim_den,img_den] = den_compare(img, noise_var,suppress_BM3D)
     img_den(:,:,8) = img_den_BM3D_complex_3;
     img_den(:,:,9) = img_den_nei_complex_real_imag;
     img_den(:,:,10) = img_den_bi;
+    img_den(:,:,11) = img_den_bi_com;
 end
